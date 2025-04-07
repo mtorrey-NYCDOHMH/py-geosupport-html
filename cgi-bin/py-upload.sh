@@ -30,7 +30,7 @@ python3 /var/www/cgi-bin/process.py "$INPUT_FILE" "$OUTPUT_FILE" "$column_name" 
 
 # Return the CSV
 echo "Content-Type: text/csv"
-echo "Content-Disposition: attachment; filename=processed.csv"
+echo "Content-Disposition: attachment; filename=processed-py.csv"
 echo
 
 cat "$OUTPUT_FILE"
