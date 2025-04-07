@@ -22,7 +22,7 @@ csvoffset=$((csvoffset + 2))
 tail -n +"$csvoffset" "$TMP" | sed '/^--.*--$/q' > "$INPUT_FILE"
 
 # Call the python script
-python3 /var/www/cgi-bin/process.r "$INPUT_FILE" "$OUTPUT_FILE" "$column_name"
+python3 /var/www/cgi-bin/process.py "$INPUT_FILE" "$OUTPUT_FILE" "$column_name"
 # (python3 is in /sbin/, you may need to add that.)
 
 # Return the CSV
