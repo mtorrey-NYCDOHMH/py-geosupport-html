@@ -14,7 +14,7 @@ cp "$HTML_SRC_DIR"/py-upload.html "$HTML_DEST_DIR/"
 cp "$HTML_SRC_DIR"/py-upload.js "$HTML_DEST_DIR/"
 
 echo "Deploying CGI and R scripts to $CGI_DEST_DIR..."
-cp "$CGI_SRC_DIR"/py-upload.sh "$CGI_DEST_DIR/"
+cp "$CGI_SRC_DIR"/py-upload.py "$CGI_DEST_DIR/"
 cp "$CGI_SRC_DIR"/process.py "$CGI_DEST_DIR/"
 
 echo "Setting executable permissions..."
