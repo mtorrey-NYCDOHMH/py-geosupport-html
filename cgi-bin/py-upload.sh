@@ -22,10 +22,10 @@ csvoffset=$((csvoffset + 2))
 tail -n +"$csvoffset" "$TMP" | sed '/^--.*--$/q' > "$INPUT_FILE"
 
 # debug echo for column name problems:
-echo "DEBUG: column_name='$column_name'" >&2
+#echo "DEBUG: column_name='$column_name'" >&2
 
-# Call the python script (2>&1 >&2 prints errors from python call)
-python3 /var/www/cgi-bin/process.py "$INPUT_FILE" "$OUTPUT_FILE" "$column_name"  2>&1 >&2
+# Call the python script (add `2>&1 >&2` to the end to print errors from python call)
+/opt/py-geosupport-conda-env/bin/python3 /var/www/cgi-bin/process.py "$INPUT_FILE" "$OUTPUT_FILE" "$column_name"
 # (you might need to add a full path for python3)
 
 # Return the CSV
