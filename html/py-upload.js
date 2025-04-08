@@ -1,6 +1,6 @@
 // Mark Torrey, from ChatGPT 2025-03-12 16:33
 // extracts column names from uploaded CSV
-// hands the file to py-upload.sh bash script for processing
+// hands the file to py-upload.py python script for processing
 // handles the file download after processing
 document.getElementById("csvFile").addEventListener("change", function(event) {
     const file = event.target.files[0];
@@ -42,7 +42,7 @@ function uploadFile() {
     formData.append("file", file);
     formData.append("column", selectedColumn);
 
-    fetch("/cgi-bin/py-upload.sh", {
+    fetch("/cgi-bin/py-upload.py", {
         method: "POST",
         body: formData
     })
