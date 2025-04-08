@@ -14,18 +14,27 @@ cat > "$TMP"
 # Extract column name
 column_name=$(grep -oP '(?<=name="column"\r\n\r\n).*' "$TMP" | tr -d '\r')
 
+if [[ -z "$column_name" ]]; then
+  echo "Content-Type: text/plain"
+  echo
+  echo "Error: No column name received from form."
+  exit 1
+fi
+
 # Extract the CSV file content
 csvoffset=$(grep -n 'name="file"' "$TMP" | cut -d: -f1)
 csvoffset=$((csvoffset + 2))
-tail -n +"$csvoffset" "$TMP" | sed '/^--.*--$/q' > "$INPUT_FILE"
+tail -n +"$csvoffset" "$TMP" | sed '/^--.*$/q' > "$INPUT_FILE"
 
 # Return headers before calling Python
 echo "Content-Type: text/csv"
 echo "Content-Disposition: attachment; filename=processed-py.csv"
 echo
 
-# debug echo for column name problems:
-#echo "DEBUG: column_name='$column_name'" >&2
+# Uncomment these for debugging
+# echo "DEBUG: column_name='$column_name'" >&2
+# ls -l "$INPUT_FILE" >&2
+# head "$INPUT_FILE" >&2
 
 # Call the python script (prints to stdout) 
 # (add `2>&1 >&2` to the end to print errors from python call)
