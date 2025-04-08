@@ -29,7 +29,10 @@
         * Then make sure your python processing script (process.py) is called (from upload-py.sh) with python from the conda environment:
             * `/opt/py-geosupport-conda-env/bin/python3 process.py ...`
         * Again, check that your python script works locally before trying to do the upload through the html:
-            * `sudo -u apache /opt/py-geosupport-conda-env/bin/python3 /var/www/cgi-bin/process.py Actual-NYC-addresses-test-data_restaurants.csv Address`
+            * `sudo -u apache /opt/py-geosupport-conda-env/bin/python3 /var/www/cgi-bin/process.py /tmp/Actual-NYC-addresses-test-data_restaurants.csv Address`
+                * (copy your test data file into /tmp and make sure it's readable by apache first)
+    * Note: the shebang at the top of process.py is ignored if you call python by path and run this script (like the sudo apache test above and in the edited upload-py.sh). 
+        * If you later decide to run this script standalone but need a specific environment (with pandas installed), edit the path of the shebang
 
 
 ## TODO
