@@ -13,6 +13,17 @@
 * **You have to have zip codes in a separate column and that column has to be named ZIP_CODE**
     * (I'll fix this so it's selectable eventually.)
 
+## RHEL install notes
+* process.py runs as user `apache` on my RHEL server, which I discovered by replacing process.py with this code:
+    ```
+    import getpass
+    print("Content-Type: text/plain\n")
+    print("Running as user:", getpass.getuser())
+    exit()
+    ```
+* Need to install pandas 
+    * (Be sure to run process.py locally to catch errors like this before attempting to run it through the html upload. Through html, it will fail silently.)
+
 ## TODO
 * Add selectable zip code column.
 * Excel instead of csv

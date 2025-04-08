@@ -17,8 +17,11 @@ echo "Deploying CGI and R scripts to $CGI_DEST_DIR..."
 cp "$CGI_SRC_DIR"/py-upload.sh "$CGI_DEST_DIR/"
 cp "$CGI_SRC_DIR"/process.py "$CGI_DEST_DIR/"
 
-echo "Setting executable permissions on CGI scripts..."
-chmod +x "$CGI_DEST_DIR"/py-upload.sh
+echo "Setting executable permissions..."
+chmod 755 "$HTML_SRC_DIR"/py-upload.html
+chmod 755 "$HTML_SRC_DIR"/py-upload.js
+chmod 755 "$CGI_DEST_DIR"/py-upload.sh
+chmod 755 "$CGI_DEST_DIR"/process.py
 
 echo "✅ Deployment complete."
 
