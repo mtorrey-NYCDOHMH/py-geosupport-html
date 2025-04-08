@@ -12,7 +12,7 @@ TMP=$(mktemp)
 cat > "$TMP"
 
 # Extract column name
-column_name=$(grep -oP '(?<=name="column"\r\n\r\n).*' "$TMP" | tr -d '\r')
+column_name=$(awk 'BEGIN{found=0}/name="column"/{found=1; next} found && NF {print; exit}' "$TMP" | tr -d '\r')
 
 if [[ -z "$column_name" ]]; then
   echo "Content-Type: text/plain"
