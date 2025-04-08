@@ -6,7 +6,6 @@
 # Set up temporary files
 UPLOAD_DIR="/tmp"
 INPUT_FILE=$(mktemp --suffix=.csv)
-OUTPUT_FILE=$(mktemp --suffix=.csv)
 TMP=$(mktemp)
 
 # Read entire request into TMP
@@ -16,24 +15,21 @@ cat > "$TMP"
 column_name=$(grep -oP '(?<=name="column"\r\n\r\n).*' "$TMP" | tr -d '\r')
 
 # Extract the CSV file content
-# Assumes it's the first file field in the form
 csvoffset=$(grep -n 'name="file"' "$TMP" | cut -d: -f1)
 csvoffset=$((csvoffset + 2))
 tail -n +"$csvoffset" "$TMP" | sed '/^--.*--$/q' > "$INPUT_FILE"
 
-# debug echo for column name problems:
-#echo "DEBUG: column_name='$column_name'" >&2
-
-# Call the python script (add `2>&1 >&2` to the end to print errors from python call)
-/opt/py-geosupport-conda-env/bin/python3 /var/www/cgi-bin/process.py "$INPUT_FILE" "$OUTPUT_FILE" "$column_name"
-# (you might need to add a full path for python3)
-
-# Return the CSV
+# Return headers before calling Python
 echo "Content-Type: text/csv"
 echo "Content-Disposition: attachment; filename=processed-py.csv"
 echo
 
-cat "$OUTPUT_FILE"
+# debug echo for column name problems:
+#echo "DEBUG: column_name='$column_name'" >&2
+
+# Call the python script (prints to stdout) 
+# (add `2>&1 >&2` to the end to print errors from python call)
+/opt/py-geosupport-conda-env/bin/python3 /var/www/cgi-bin/process.py "$INPUT_FILE" "$column_name"
 
 # Cleanup
-rm -f "$INPUT_FILE" "$OUTPUT_FILE" "$TMP"
+rm -f "$INPUT_FILE" "$TMP"
