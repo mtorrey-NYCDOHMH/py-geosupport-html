@@ -22,7 +22,7 @@
 * Install pandas 
     * (Be sure to run process.py locally to catch errors like this before attempting to run it through the html upload. Through html, it will fail silently.)
     * On our server, pandas has to be installed in a conda environment.
-        * Use: `conda create -y -p /opt/py-geosupport-conda-env python=3.9 pandas`
+        * Use: `sudo conda create -y -p /opt/py-geosupport-conda-env python=3.9 pandas`
         * Change permissions so apache can use the conda env:
             * `sudo chown -R root:apache /opt/py-geosupport-conda-env`
             * `sudo chmod -R 755 /opt/py-geosupport-conda-env`
@@ -34,6 +34,25 @@
     * Note: the shebang at the top of process.py is ignored if you call python by path and run this script (like the sudo apache test above and in the edited upload-py.sh). 
         * If you later decide to run this script standalone but need a specific environment (with pandas installed), edit the path of the shebang
 
+* Install python-geosupport
+    * (See notes for initializing conda in DOHMH-bb wiki)
+    * Copy the repo to the RHEL server with no internet access
+    * `sudo conda activate /opt/py-geosupport-conda-env/`
+    * cd into directory with the repo. Run `pip install . --no-index`
+        * --no-index tells pip not to try to install dependencies from pypi
+        * If pip fails for missing dependencies, the use `conda install dependency` to install them to the current conda environment.
+
+* Install geosupport
+1. Manually download NYC's Geosupport version 24B from Bytes of the Big Apple:
+    * Search for Linux version of Geosupport Desktop Edition, 24B on NYC DCP's BYTES of the BIG APPLE™ Archive page.
+    * Or try this url for direct download: https://s-media.nyc.gov/agencies/dcp/assets/files/zip/data-tools/bytes/linux_geo24b_24.2.zip
+2. Unzip the downloaded file (linux_geo24b_24.2.zip) somewhere so you get a `version-24b_24.2/` directory with all the Geosupport libraries in it. 
+3. Make sure these environment variables are set:
+    ```
+    export GEOFILES=/var/geosupport/version-19b/fls/
+    export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/var/geosupport/version-19b/lib/
+    ```
+    * See: https://python-geosupport.readthedocs.io/en/latest/installation.html#linux
 
 ## TODO
 * Add selectable zip code column.
