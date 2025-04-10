@@ -1,10 +1,14 @@
 ## python-geosupport-test-stuff.py
-## Last modified: 2024-04-23 16:46
+## Last modified: 2025-04-10 10:31
 
 ## This stuff from python-geosupport documentation: 
 ## https://python-geosupport.readthedocs.io/en/latest/
 
 ## Be sure to set environment variables first. See MT-local-lib-config-commands.sh*
+# Try setting them here (not sure if this will work):
+import os
+os.environ["GEOFILES"] = "/usr/share/R/library/geocoding_tests/version-24d_24.4/fls/"
+os.environ["LD_LIBRARY_PATH"] = "/usr/share/R/library/geocoding_tests/version-24d_24.4/lib/"
 
 
 ## Basic usage:
