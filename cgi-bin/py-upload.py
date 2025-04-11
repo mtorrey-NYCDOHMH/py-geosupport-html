@@ -32,13 +32,19 @@ def main():
         shutil.copyfileobj(file_item.file, input_file)
         input_path = input_file.name
 
-    # Call the process.py script
+    # Set required Geosupport environment variables
+    env = os.environ.copy()
+    env["LD_LIBRARY_PATH"] = "/usr/share/R/library/geocoding_tests/version-24d_24.4/lib/"
+    env["GEOFILES"] = "/usr/share/R/library/geocoding_tests/version-24d_24.4/fls/"
+
+    # Call the process.py script using python3 from the conda environment that has pandas and geosupport installed
     try:
         subprocess.run(
             ["/opt/py-geosupport-conda-env/bin/python3", "/var/www/cgi-bin/process.py", input_path, column_name],
             check=True,
             stdout=sys.stdout,
-            stderr=sys.stderr
+            stderr=sys.stderr,
+            env=env
         )
     except subprocess.CalledProcessError as e:
         print(f"Error during processing: {e}", file=sys.stderr)
