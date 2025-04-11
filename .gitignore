@@ -1,5 +1,8 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
+# MT: This .gitignore was Tyler's and was originally in his directory, and is intended for that directory.
+# I removed the / from before node_modules, .pnp, and coverage.
+
 # dependencies
 node_modules
 .pnp
