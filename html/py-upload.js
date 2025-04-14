@@ -1,18 +1,16 @@
-// Mark Torrey, from ChatGPT 2025-03-12 16:33
+// Mark Torrey, from ChatGPT 2025-04-14
 // extracts column names from uploaded CSV
 // hands the file to py-upload.py python script for processing
 // handles the file download after processing
-document.getElementById("csvFile").addEventListener("change", function(event) {
+document.getElementById("csvFile").addEventListener("change", function (event) {
     const file = event.target.files[0];
     if (!file) return;
 
     const reader = new FileReader();
-    reader.onload = function(e) {
-        const text = e.target.result;
-        const lines = text.split("\n");
-        if (lines.length > 0) {
-            const headers = lines[0].split(",");
-            const dropdown = document.getElementById("column");
+    reader.onload = function (e) {
+        const headers = e.target.result.split("\n")[0].split(",");
+        ["building", "street", "zip"].forEach(id => {
+            const dropdown = document.getElementById(`${id}_col`);
             dropdown.innerHTML = "";
             headers.forEach(header => {
                 const option = document.createElement("option");
@@ -20,45 +18,40 @@ document.getElementById("csvFile").addEventListener("change", function(event) {
                 option.textContent = header.trim();
                 dropdown.appendChild(option);
             });
-        }
+        });
     };
     reader.readAsText(file);
 });
 
 function uploadFile() {
-    const fileInput = document.getElementById("csvFile");
-    const columnSelect = document.getElementById("column");
-    const statusText = document.getElementById("status");
+    const file = document.getElementById("csvFile").files[0];
+    const buildingCol = document.getElementById("building_col").value;
+    const streetCol = document.getElementById("street_col").value;
+    const zipCol = document.getElementById("zip_col").value;
 
-    if (!fileInput.files.length) {
-        alert("Please select a file first.");
-        return;
-    }
-
-    const file = fileInput.files[0];
-    const selectedColumn = columnSelect.value;
-    
     const formData = new FormData();
     formData.append("file", file);
-    formData.append("column", selectedColumn);
+    formData.append("building_col", buildingCol);
+    formData.append("street_col", streetCol);
+    formData.append("zip_col", zipCol);
 
     fetch("/cgi-bin/py-upload.py", {
         method: "POST",
-        body: formData
+        body: formData,
     })
-    .then(response => response.blob())
-    .then(blob => {
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = "processed-py.csv";
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        statusText.innerText = "File processed successfully. Downloading...";
-    })
-    .catch(error => {
-        console.error("Error:", error);
-        statusText.innerText = "Error processing file.";
-    });
+        .then(response => response.blob())
+        .then(blob => {
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = "processed-py.csv";
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            document.getElementById("status").innerText = "Done!";
+        })
+        .catch(error => {
+            console.error("Error:", error);
+            document.getElementById("status").innerText = "Error during upload.";
+        });
 }

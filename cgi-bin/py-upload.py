@@ -12,19 +12,20 @@ def main():
     print("Content-Disposition: attachment; filename=processed-py.csv")
     print()
 
-    # Parse multipart form data
     form = cgi.FieldStorage()
 
-    # Get file and column name from form
-    if "file" not in form or "column" not in form:
-        print("Missing 'file' or 'column' field in form data.", file=sys.stderr)
+    required_fields = ["file", "building_col", "street_col", "zip_col"]
+    if not all(field in form for field in required_fields):
+        print("Missing one or more form fields.", file=sys.stderr)
         sys.exit(1)
 
     file_item = form["file"]
-    column_name = form.getvalue("column")
+    building_col = form.getvalue("building_col")
+    street_col = form.getvalue("street_col")
+    zip_col = form.getvalue("zip_col")
 
-    if not file_item.file or not column_name:
-        print("Empty file or column name received.", file=sys.stderr)
+    if not file_item.file or not building_col or not street_col or not zip_col:
+        print("Empty form field received.", file=sys.stderr)
         sys.exit(1)
 
     # Save uploaded file to temp file
@@ -40,7 +41,8 @@ def main():
     # Call the process.py script using python3 from the conda environment that has pandas and geosupport installed
     try:
         subprocess.run(
-            ["/opt/py-geosupport-conda-env/bin/python3", "/var/www/cgi-bin/process.py", input_path, column_name],
+            ["/opt/py-geosupport-conda-env/bin/python3", "/var/www/cgi-bin/process.py",
+             input_path, building_col, street_col, zip_col],
             check=True,
             stdout=sys.stdout,
             stderr=sys.stderr,
