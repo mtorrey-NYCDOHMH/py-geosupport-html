@@ -8,8 +8,8 @@
 * Tyler_geoclient-submit-main/
     * This was an early pass Tyler did at building something similar using React/javascript and then passing the addresses to a web service.
     * (I am not going to do this this way because I know no javascript, and I want to geocode locally. This folder will be deleted.)
-* flask-retry-example/
-    * This is a minimal demo example of an editable html table rendered with flask.
+* flask-geosupport-example/
+    * This is a minimal demo example of using flask/python/geosupport for geocoding
 * html-geosupport-minimal-example/
     * This is a minimal demo example of an html web page that can upload and geocode a csv file using geosupport.
 * test-materials/
