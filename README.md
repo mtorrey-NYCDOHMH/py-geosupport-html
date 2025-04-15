@@ -1,15 +1,25 @@
 # py-geosupport-html
-* This repo provides some html and scripts to allow bulk upload and processing of addresses with NYC's powerful [Geosupport](https://www.nyc.gov/site/planning/data-maps/open-data/dwn-gde-home.page) geocoding software.
+* This repo provides some html and scripts for bulk uploading and processing of addresses with NYC's powerful [Geosupport](https://www.nyc.gov/site/planning/data-maps/open-data/dwn-gde-home.page) geocoding software.
 * Geosupport is powerful but complex. These scripts let a normal person upload a basic csv with an address and a zip code column to a web page and get back geocoded XY coordinates.
 * While rGBAT-html does the same geocoding processing with R (using rGBAT library on the back end), this repo uses Ian Shiland's [python-geosupport](https://github.com/ishiland/python-geosupport/tree/master)
 * This is configured for the specific setup on RHEL using apache and python in a conda env. You would have to make adjustments to get it to run elsewhere.
 
-## Usage
+## Stuff included:
+* Tyler_geoclient-submit-main/
+    * This was an early pass Tyler did at building something similar using React/javascript and then passing the addresses to a web service.
+    * (I am not going to do this this way because I know no javascript, and I want to geocode locally. This folder will be deleted.)
+* flask-retry-example/
+    * This is a minimal demo example of an editable html table rendered with flask.
+* html-geosupport-minimal-example/
+    * This is a minimal demo example of an html web page that can upload and geocode a csv file using geosupport.
+* test-materials/
+    * Example data for testing, and some python scripts for testing python-geosupport install.
+
+## html-geosupport-minimal-example Usage
+* Edit deploy.sh to set up correct deployment. Run `deploy.sh` to install the necessary files to the Apache server directories.
 * Web browse to where upload.html is being served by your web server.
 * Select your data csv file for upload.
-* Select the column from the drop-down menu that contains your Addresses
-* **You have to have zip codes in a separate column and that column has to be named ZIP_CODE**
-    * (I'll fix this so it's selectable eventually.)
+* Select the columns from the drop-down menu that contains your Addresses
 
 ## RHEL install notes
 * process.py runs as user `apache` on my RHEL server, which I discovered by replacing process.py with this code:
@@ -55,10 +65,8 @@
     * See: https://python-geosupport.readthedocs.io/en/latest/installation.html#linux
 
 ## TODO
-* Add selectable zip code column.
 * Excel instead of csv
 * Add other Geosupport field options
-* Add support for split addresses? (geosupport can handle it)
 
 ## License and credits
 * test-materials/ contains some stuff for testing.

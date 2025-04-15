@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Edit and Retry</title>
+</head>
+<body>
+  <h1>Retry Failed Rows</h1>
+  <form method="post" action="/retry">
+    <table border="1">
+      <tr>
+        <th>House Number</th><th>Street</th><th>ZIP</th><th>Error</th>
+      </tr>
+      {% for row in failed_rows %}
+      <tr>
+        <td><input name="house_number_{{ loop.index }}" value="{{ row.house_number }}"></td>
+        <td><input name="street_{{ loop.index }}" value="{{ row.street }}"></td>
+        <td><input name="zip_{{ loop.index }}" value="{{ row.zip }}"></td>
+        <td>{{ row.error }}</td>
+      </tr>
+      {% endfor %}
+    </table>
+    <input type="hidden" name="row_count" value="{{ failed_rows|length }}">
+    <br>
+    <button type="submit">Retry Failed Rows</button>
+  </form>
+</body>
+</html>
