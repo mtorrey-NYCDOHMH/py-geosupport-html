@@ -1,27 +1,34 @@
 
-from flask import Flask, request, render_template, redirect
+from flask import Flask, request, render_template, redirect, session
 import pandas as pd
 import os
 
 app = Flask(__name__)
-UPLOAD_FOLDER = 'uploads'
-os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+app.secret_key = 'dev'  # replace in production
 
 @app.route('/', methods=['GET', 'POST'])
 def upload_file():
     if request.method == 'POST':
-        if 'file' not in request.files:
-            return 'No file part', 400
-        file = request.files['file']
-        if file.filename == '':
-            return 'No selected file', 400
+        file = request.files.get('file')
+        if not file or file.filename == '':
+            return 'No file selected', 400
         try:
             df = pd.read_excel(file, engine='openpyxl')
         except Exception as e:
             return f'Error reading Excel file: {e}', 400
-        preview = df.head().to_html(classes='table')
-        return f'<h2>Preview</h2>{preview}<br><a href="/">Upload another</a>'
+        session['data'] = df.to_json()  # store in session
+        cols = df.columns.tolist()
+        return render_template('select_columns.html', columns=cols)
     return render_template('upload.html')
+
+@app.route('/select', methods=['POST'])
+def select_columns():
+    house = request.form.get('house')
+    street = request.form.get('street')
+    zipc = request.form.get('zip')
+    return f'Selected columns: house={house}, street={street}, zip={zipc}'
 
 if __name__ == "__main__":
     app.run(debug=True)
+
+

@@ -1,0 +1,22 @@
+<!doctype html>
+<html>
+<head><title>Select Columns</title></head>
+<body>
+  <h1>Select Address Columns</h1>
+  <form method=post action="/select">
+    <label>House Number:</label>
+    <select name="house">
+      {% for col in columns %}<option>{{ col }}</option>{% endfor %}
+    </select><br>
+    <label>Street Name:</label>
+    <select name="street">
+      {% for col in columns %}<option>{{ col }}</option>{% endfor %}
+    </select><br>
+    <label>ZIP Code:</label>
+    <select name="zip">
+      {% for col in columns %}<option>{{ col }}</option>{% endfor %}
+    </select><br>
+    <input type=submit value="Submit">
+  </form>
+</body>
+</html>
