@@ -3,20 +3,32 @@
 <head><title>Select Columns</title></head>
 <body>
   <h1>Select Address Columns</h1>
-  <form method=post action="/select">
-    <label>House Number:</label>
-    <select name="house">
-      {% for col in columns %}<option>{{ col }}</option>{% endfor %}
+  <form method="post">
+    <label for="house_col">House Number:</label>
+    <select name="house_col">
+      {% for col in columns %}
+      <option value="{{ col }}">{{ col }}</option>
+      {% endfor %}
     </select><br>
-    <label>Street Name:</label>
-    <select name="street">
-      {% for col in columns %}<option>{{ col }}</option>{% endfor %}
+
+    <label for="street_col">Street Name:</label>
+    <select name="street_col">
+      {% for col in columns %}
+      <option value="{{ col }}">{{ col }}</option>
+      {% endfor %}
     </select><br>
-    <label>ZIP Code:</label>
-    <select name="zip">
-      {% for col in columns %}<option>{{ col }}</option>{% endfor %}
+
+    <label for="zip_col">ZIP Code:</label>
+    <select name="zip_col">
+      {% for col in columns %}
+      <option value="{{ col }}">{{ col }}</option>
+      {% endfor %}
     </select><br>
-    <input type=submit value="Submit">
+
+    <input type="submit" value="Submit">
   </form>
 </body>
 </html>
+
+
+
