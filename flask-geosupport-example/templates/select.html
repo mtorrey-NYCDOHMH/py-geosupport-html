@@ -4,28 +4,28 @@
 <body>
   <h1>Select Address Columns</h1>
   <form method="post">
-    <label for="house_col">House Number:</label>
+    <label>House Number Column:</label>
     <select name="house_col">
       {% for col in columns %}
-      <option value="{{ col }}">{{ col }}</option>
+        <option value="{{ col }}">{{ col }}</option>
       {% endfor %}
     </select><br>
 
-    <label for="street_col">Street Name:</label>
+    <label>Street Name Column:</label>
     <select name="street_col">
       {% for col in columns %}
-      <option value="{{ col }}">{{ col }}</option>
+        <option value="{{ col }}">{{ col }}</option>
       {% endfor %}
     </select><br>
 
-    <label for="zip_col">ZIP Code:</label>
+    <label>ZIP Code Column:</label>
     <select name="zip_col">
       {% for col in columns %}
-      <option value="{{ col }}">{{ col }}</option>
+        <option value="{{ col }}">{{ col }}</option>
       {% endfor %}
     </select><br>
 
-    <input type="submit" value="Submit">
+    <input type="submit" value="Geocode">
   </form>
 </body>
 </html>
