@@ -1,0 +1,56 @@
+<!doctype html>
+<html>
+<head>
+  <title>Geocoding Results</title>
+  <style>
+    table, th, td { border: 1px solid black; border-collapse: collapse; padding: 5px; }
+    th { background-color: #f2f2f2; }
+  </style>
+</head>
+<body>
+  <h2>Valid Addresses (Read-only)</h2>
+  <table>
+    <thead>
+      <tr>
+        {% for col in valid.columns %}
+          <th>{{ col }}</th>
+        {% endfor %}
+      </tr>
+    </thead>
+    <tbody>
+      {% for row in valid.itertuples(index=False) %}
+        <tr>
+          {% for val in row %}
+            <td>{{ val }}</td>
+          {% endfor %}
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <h2>Addresses with Errors (Editable)</h2>
+  <form method="POST" action="/retry">
+    <table>
+      <thead>
+        <tr>
+          {% for col in error.columns %}
+            <th>{{ col }}</th>
+          {% endfor %}
+        </tr>
+      </thead>
+      <tbody>
+        {% for i, row in error.iterrows() %}
+          <tr>
+            {% for col in error.columns %}
+              <td>
+                <input type="text" name="{{ col }}_{{ i }}" value="{{ row[col] }}">
+              </td>
+            {% endfor %}
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    <input type="submit" value="Resubmit Corrections">
+  </form>
+</body>
+</html>

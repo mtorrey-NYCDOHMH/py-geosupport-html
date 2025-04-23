@@ -56,44 +56,47 @@ def select_columns():
     return render_template('select.html', columns=columns) # calls select.html in templates/
 
 ### Do the actual geocoding:
-@app.route('/geocode')
+@app.route('/geocode', methods=['GET', 'POST'])
 def geocode_data():
     filepath = session.get('filepath')
-    if not filepath or not os.path.exists(filepath):
-        return 'File missing', 400
+    if not filepath:
+        return 'No file uploaded', 400
+
     df = pd.read_excel(filepath)
-    house_col = session.get('house_col')
-    street_col = session.get('street_col')
-    zip_col = session.get('zip_col')
+    house_col = session['house_col']
+    street_col = session['street_col']
+    zip_col = session['zip_col']
 
-    if not all([house_col, street_col, zip_col]):
-        return 'Missing column selection', 400
+    gdf = pd.DataFrame()
+    latitudes = []
+    longitudes = []
+    errors = []
 
-    def try_geocode(row):
+    for _, row in df.iterrows():
         try:
             result = g.address(
-                house_number=str(row[house_col]),
+                house_number=row[house_col],
                 street_name=row[street_col],
-                zip_code=str(row[zip_col])
+                zip_code=row[zip_col]
             )
-            return {
-                # Just asking for XY and error columns back, but it is possible to get any geosupport field:
-                'Latitude': result.get('Latitude'),
-                'Longitude': result.get('Longitude'),
-                'Geosupport Error': None
-            }
+            latitudes.append(result.get('Latitude'))
+            longitudes.append(result.get('Longitude'))
+            errors.append(None)
         except Exception as e:
-            return {
-                'Latitude': None,
-                'Longitude': None,
-                'Geosupport Error': str(e)
-            }
+            latitudes.append(None)
+            longitudes.append(None)
+            errors.append(str(e))
 
-    geo_results = df.apply(try_geocode, axis=1, result_type='expand')
-    df = pd.concat([df, geo_results], axis=1)
+    df['Latitude'] = latitudes
+    df['Longitude'] = longitudes
+    df['Geosupport Error'] = errors
+
+    df_valid = df[df['Geosupport Error'].isna()]
+    df_error = df[df['Geosupport Error'].notna()] 
+
     os.remove(filepath) # Remove the saved uploaded file from /tmp
 
-    return df.to_html() # This very simply renders the returned dataframe as an html page in the user's browser.
+    return render_template('geocode_result.html', valid=df_valid, error=df_error) # calls geocode_result template for user to review data successfully geocoded, and edit lines that failed.
 
 # This is necessary to run this file on the command line. You can turn off debugging, or comment this whole thing if it is run from Apache
 if __name__ == "__main__":
