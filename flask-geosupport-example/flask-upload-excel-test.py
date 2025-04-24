@@ -32,14 +32,14 @@ def upload_file():
         # Create a unique session-specific subdirectory
         session_id = str(uuid.uuid4())
         session_dir = os.path.join(app.config['BASE_TMP_DIR'], session_id)
-        os.makedirs(session_dir, exist_ok=True)
+        os.makedirs(session_dir, exist_ok=True) # create the uuid session-specific subdir in /tmp on the system
         os.chmod(session_dir, 0o700)
 
         session['upload_dir'] = session_dir
         # Now you use session['upload_dir'] anywhere you want to reference the session upload dir
 
         # Save uploaded file with secure permissions
-        filename = secure_filename(file.filename)
+        filename = secure_filename(file.filename) # cleans the file name of abusable stuff like ../, from werkseug.utils
         filepath = os.path.join(session_dir, filename)
 
         old_umask = os.umask(0o177)
