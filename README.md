@@ -4,22 +4,30 @@
 * While rGBAT-html does the same geocoding processing with R (using rGBAT library on the back end), this repo uses Ian Shiland's [python-geosupport](https://github.com/ishiland/python-geosupport/tree/master)
 * This is configured for the specific setup on RHEL using apache and python in a conda env. You would have to make adjustments to get it to run elsewhere.
 
-## Stuff included:
-* Tyler_geoclient-submit-main/
-    * This was an early pass Tyler did at building something similar using React/javascript and then passing the addresses to a web service.
-    * (I am not going to do this this way because I know no javascript, and I want to geocode locally. This folder will be deleted.)
-* flask-geosupport-example/
-    * This is a minimal demo example of using flask/python/geosupport for geocoding
-* html-geosupport-minimal-example/
-    * This is a minimal demo example of an html web page that can upload and geocode a csv file using geosupport.
+## Flask stuff
+* (from: ChatGPT 2025-04-24)
+* `to-set-geosupport-env-vars.sh` is the executable you should run to start flask
+    * it sets geosupport's env vars, and then calls your flask python file (flask-upload-excel-test.py)
+    * `flask-upload-excel-test.py` does the main work.
+        * This will start a webserver on http://127.0.0.1:5000 which you can visit to interact with the test page.
+* templates/ holds the html page templates that your flask file (flask-upload-excel-test.py) uses.
+
+## Other stuff included:
 * test-materials/
     * Example data for testing, and some python scripts for testing python-geosupport install.
 
-## html-geosupport-minimal-example Usage
-* Edit deploy.sh to set up correct deployment. Run `deploy.sh` to install the necessary files to the Apache server directories.
-* Web browse to where upload.html is being served by your web server.
-* Select your data csv file for upload.
-* Select the columns from the drop-down menu that contains your Addresses
+## General install notes (and Arch install notes)
+* For python, you need to install:
+    * openpyxl (python-openpyxl as Arch package)
+    * python-geosupport https://github.com/ishiland/python-geosupport/tree/master
+        * (See notes in python-geosupport-MT fork-branch)
+    * flask (python-flask on Arch)
+    * pandas (python-pandas on Arch)
+    * werkzeug.utils (python-werkzeug on Arch)
+    * (Note: you need to have installed flask and openpyxl, on Arch: `sudo pacman -S python-flask python-openpyxl`.)
+* Eventually:
+    * You will want to move this to the RHEL server. There you will want to use the /opt/py-geosupport-env conda environment (install flask).
+    * You will want to move to a WSGI server (gunicorn or mod_wsgi Apache module).
 
 ## RHEL install notes
 * process.py runs as user `apache` on my RHEL server, which I discovered by replacing process.py with this code:
