@@ -10,7 +10,7 @@ import pandas as pd
 # Note you need to install openpyxl to upload excel files too, though it's not imported.
 
 app = Flask(__name__)
-app.secret_key = 'your_secret_key' # This needs to be set to something random for production
+app.secret_key = 'your_secret_key' # This needs to be set to something random for production, required by Flask for saving session keys
 BASE_TMP_DIR = '/tmp/secure_geosupport_uploads' 
 os.makedirs(BASE_TMP_DIR, exist_ok=True) # create a base directory for the app in /tmp
 os.chmod(BASE_TMP_DIR, 0o700)
