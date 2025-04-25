@@ -3,30 +3,41 @@
 <head>
   <title>Geocoding Results</title>
   <style>
-    table, th, td { border: 1px solid black; border-collapse: collapse; padding: 5px; }
-    th { background-color: #f2f2f2; }
+    .table-cell {
+      max-width: 200px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .table-cell:hover {
+      overflow: visible;
+      white-space: normal;
+      background: #f9f9f9;
+      position: relative;
+      z-index: 1;
+    }
   </style>
 </head>
 <body>
   <h2>Valid Addresses (Read-only)</h2>
-  <table>
-    <thead>
+<table>
+  <thead>
+    <tr>
+      {% for col in valid.columns %}
+        <th>{{ col }}</th>
+      {% endfor %}
+    </tr>
+  </thead>
+  <tbody>
+    {% for _, row in valid.iterrows() %}
       <tr>
         {% for col in valid.columns %}
-          <th>{{ col }}</th>
+          <td class="table-cell">{{ row[col] }}</td>
         {% endfor %}
       </tr>
-    </thead>
-    <tbody>
-      {% for row in valid.itertuples(index=False) %}
-        <tr>
-          {% for val in row %}
-            <td>{{ val }}</td>
-          {% endfor %}
-        </tr>
-      {% endfor %}
-    </tbody>
-  </table>
+    {% endfor %}
+  </tbody>
+</table>
 
   <h2>Addresses with Errors (Editable)</h2>
   <form method="POST" action="/retry">
