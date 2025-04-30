@@ -3,7 +3,9 @@
 import os
 import uuid
 import tempfile # needed for the stuff that sets the tmp file permissions
-from flask import Flask, request, render_template, redirect, url_for, session
+import io
+import shutil
+from flask import Flask, request, render_template, redirect, url_for, session, send_file
 from werkzeug.utils import secure_filename
 from geosupport import Geosupport # geocoder package, have to install manually.
 import pandas as pd
@@ -18,6 +20,7 @@ os.chmod(BASE_TMP_DIR, 0o700)
 app.config['BASE_TMP_DIR'] = BASE_TMP_DIR
 
 g = Geosupport()
+
 
 ### Home page to upload file:
 @app.route('/', methods=['GET', 'POST'])
@@ -52,6 +55,7 @@ def upload_file():
         return redirect(url_for('select_columns'))
 
     return render_template('upload.html')
+
 
 ### Select building num, street name, and zip columns for geocoding:
 @app.route('/select', methods=['GET', 'POST'])
@@ -112,11 +116,16 @@ def geocode_data():
     first_valid = os.path.join(session['upload_dir'], 'valid_addresses.csv')
     df_valid.to_csv(first_valid, index=False)
 
+    # Save initial error results for download
+    error_path = os.path.join(session['upload_dir'], 'last_error_cache.csv')
+    df_error.to_csv(error_path, index=False)
+
     # Get count of rows for successfully geocded and failed:
     valid_count = len(df_valid)
     error_count = len(df_error)
 
     return render_template('geocode_result.html', valid=df_valid, error=df_error, valid_count=valid_count, error_count=error_count) # calls geocode_result template for user to review data successfully geocoded, and edit lines that failed.
+
 
 @app.route('/retry', methods=['POST'])
 def retry():
@@ -181,6 +190,9 @@ def retry():
     # Ensure consistent column order
     df_error = df_error[df_valid_combined.columns]
 
+    # Save error table to reuse during download
+    df_error.to_csv(os.path.join(upload_dir, 'last_error_cache.csv'), index=False)
+
     # Get count of rows for successfully geocded and failed:
     valid_count = len(df_valid_combined)
     error_count = len(df_error)
@@ -188,8 +200,38 @@ def retry():
     return render_template('geocode_result.html', valid=df_valid_combined, error=df_error, valid_count=valid_count, error_count=error_count)
 
 
-# TODO: Make sure you delete the user session stuff from /tmp after the user download results
+@app.route('/download', methods=['GET'])
+def download_results():
+    upload_dir = session.get('upload_dir')
+    if not upload_dir:
+        return 'No session data available.', 400
 
+    valid_path = os.path.join(upload_dir, 'valid_addresses.csv')
+    error_path = os.path.join(upload_dir, 'last_error_cache.csv')
+
+    if not os.path.exists(valid_path) and not os.path.exists(error_path):
+        return 'No results available.', 400
+
+    df_valid = pd.read_csv(valid_path) if os.path.exists(valid_path) else pd.DataFrame()
+    df_error = pd.read_csv(error_path) if os.path.exists(error_path) else pd.DataFrame(columns=df_valid.columns)
+
+    # Combine: errors first
+    df_all = pd.concat([df_error, df_valid], ignore_index=True)
+
+    # Write to a temporary Excel file
+    tmp_excel_path = os.path.join(upload_dir, 'geocoding_results.xlsx')
+    df_all.to_excel(tmp_excel_path, index=False, engine='openpyxl')
+
+    # Prepare file to send
+    response = send_file(tmp_excel_path, as_attachment=True, download_name='geocoding_results.xlsx')
+
+    # TODO: this cleanup doesn't work. Add an "end session" button and landing page for deleting stuff in /tmp. Also need to figure out a way to clean out /tmp for folks who forget to click end session
+    # Cleanup: delete session dir after response is returned
+    #@response.call_on_close
+    #def cleanup():
+    #    shutil.rmtree(upload_dir, ignore_errors=True)
+
+    return response
 
 # This is necessary to run this file on the command line. You can turn off debugging, or comment this whole thing if it is run from Apache
 if __name__ == "__main__":
