@@ -20,6 +20,10 @@
 </head>
 <body>
 
+<h2>Geocoding Results</h2>
+<p><strong>{{ valid_count }}</strong> addresses successfully geocoded.</p>
+<p><strong>{{ error_count }}</strong> addresses had errors.</p>
+
   <h2>Addresses with Errors (Editable)</h2>
   <form method="POST" action="/retry">
     <table>

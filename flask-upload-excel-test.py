@@ -112,7 +112,11 @@ def geocode_data():
     first_valid = os.path.join(session['upload_dir'], 'valid_addresses.csv')
     df_valid.to_csv(first_valid, index=False)
 
-    return render_template('geocode_result.html', valid=df_valid, error=df_error) # calls geocode_result template for user to review data successfully geocoded, and edit lines that failed.
+    # Get count of rows for successfully geocded and failed:
+    valid_count = len(df_valid)
+    error_count = len(df_error)
+
+    return render_template('geocode_result.html', valid=df_valid, error=df_error, valid_count=valid_count, error_count=error_count) # calls geocode_result template for user to review data successfully geocoded, and edit lines that failed.
 
 @app.route('/retry', methods=['POST'])
 def retry():
@@ -177,10 +181,14 @@ def retry():
     # Ensure consistent column order
     df_error = df_error[df_valid_combined.columns]
 
-    return render_template('geocode_result.html', valid=df_valid_combined, error=df_error)
+    # Get count of rows for successfully geocded and failed:
+    valid_count = len(df_valid_combined)
+    error_count = len(df_error)
+
+    return render_template('geocode_result.html', valid=df_valid_combined, error=df_error, valid_count=valid_count, error_count=error_count)
 
 
-# NOTE: Make sure you delete the user session stuff from /tmp after the user download results
+# TODO: Make sure you delete the user session stuff from /tmp after the user download results
 
 
 # This is necessary to run this file on the command line. You can turn off debugging, or comment this whole thing if it is run from Apache
