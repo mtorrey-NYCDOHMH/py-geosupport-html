@@ -19,25 +19,6 @@
   </style>
 </head>
 <body>
-  <h2>Valid Addresses (Read-only)</h2>
-<table>
-  <thead>
-    <tr>
-      {% for col in valid.columns %}
-        <th>{{ col }}</th>
-      {% endfor %}
-    </tr>
-  </thead>
-  <tbody>
-    {% for _, row in valid.iterrows() %}
-      <tr>
-        {% for col in valid.columns %}
-          <td class="table-cell">{{ row[col] }}</td>
-        {% endfor %}
-      </tr>
-    {% endfor %}
-  </tbody>
-</table>
 
   <h2>Addresses with Errors (Editable)</h2>
   <form method="POST" action="/retry">
@@ -63,5 +44,26 @@
     </table>
     <input type="submit" value="Resubmit Corrections">
   </form>
+
+  <h2>Valid Addresses (Read-only)</h2>
+<table>
+  <thead>
+    <tr>
+      {% for col in valid.columns %}
+        <th>{{ col }}</th>
+      {% endfor %}
+    </tr>
+  </thead>
+  <tbody>
+    {% for _, row in valid.iterrows() %}
+      <tr>
+        {% for col in valid.columns %}
+          <td class="table-cell">{{ row[col] }}</td>
+        {% endfor %}
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
 </body>
 </html>
