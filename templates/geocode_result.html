@@ -29,6 +29,10 @@
   <button type="submit">Download Results (Excel)</button>
 </form>
 
+<form action="{{ url_for('end_session') }}" method="post">
+    <button type="submit">End Session / clear session information</button>
+</form>
+
   <h2>Addresses with Errors (Editable)</h2>
   <form method="POST" action="/retry">
     <table>

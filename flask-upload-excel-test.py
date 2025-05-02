@@ -4,7 +4,8 @@ import os
 import uuid
 import tempfile # needed for the stuff that sets the tmp file permissions
 import io
-import shutil
+import time # needed for checking file times for deleting old files
+import shutil # needed for rmtree for deleting session folder
 from flask import Flask, request, render_template, redirect, url_for, session, send_file
 from werkzeug.utils import secure_filename
 from geosupport import Geosupport # geocoder package, have to install manually.
@@ -26,6 +27,21 @@ g = Geosupport()
 @app.route('/', methods=['GET', 'POST'])
 def upload_file():
     if request.method == 'POST':
+
+        # Delete session dirs more than 2 hours old
+        # The idea being that if someone left data in /tmp withouth clicking the 'end session' button, this will take care of it.
+        # (Alternatively, this could be done with a cron job, but I like having it here so I don't have to remember there's a separate process running for security)
+        # (move this above if request.method line if you want it to run every time the page is loaded. This runs on the upload button being clicked.)
+        now = time.time()
+        for name in os.listdir(BASE_TMP_DIR):
+            path = os.path.join(BASE_TMP_DIR, name)
+            if os.path.isdir(path):
+                if now - os.path.getmtime(path) > 2 * 60 * 60:
+                    try:
+                        shutil.rmtree(path)
+                    except Exception:
+                        pass
+
         if 'file' not in request.files:
             return 'No file part', 400
         file = request.files['file']
@@ -45,6 +61,7 @@ def upload_file():
         filename = secure_filename(file.filename) # cleans the file name of abusable stuff like ../, from werkseug.utils
         filepath = os.path.join(session_dir, filename)
 
+        # TODO: make sure this works and is secure on multi-user system.
         old_umask = os.umask(0o177)
         try:
             file.save(filepath)
@@ -225,13 +242,19 @@ def download_results():
     # Prepare file to send
     response = send_file(tmp_excel_path, as_attachment=True, download_name='geocoding_results.xlsx')
 
-    # TODO: this cleanup doesn't work. Add an "end session" button and landing page for deleting stuff in /tmp. Also need to figure out a way to clean out /tmp for folks who forget to click end session
-    # Cleanup: delete session dir after response is returned
-    #@response.call_on_close
-    #def cleanup():
-    #    shutil.rmtree(upload_dir, ignore_errors=True)
-
     return response
+
+# This route deletes the user files and returns them to the upload page to start over.
+@app.route('/end', methods=['POST'])
+def end_session():
+    upload_dir = session.get('upload_dir')
+
+    # Clear session and delete upload dir
+    session.clear()
+    if upload_dir and os.path.exists(upload_dir):
+        shutil.rmtree(upload_dir, ignore_errors=True)
+
+    return redirect(url_for('upload_file')) # return user to upload_file function
 
 # This is necessary to run this file on the command line. You can turn off debugging, or comment this whole thing if it is run from Apache
 if __name__ == "__main__":
