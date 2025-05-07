@@ -1,5 +1,5 @@
 #!/bin/bash
-# Last modified: 2025-05-07 17:43
+# Last modified: 2025-05-07 17:45
 # this file: MT-to-set-geosupport-env-vars.sh
 
 ########################################
@@ -17,11 +17,11 @@
 ########################################
 
 printf "Setting GEOFILES and LD_LIBRARY_PATH environment variables...\n"
-#export LD_LIBRARY_PATH=/usr/share/R/library/geocoding_tests/version-24d_24.4/lib/
-#export GEOFILES=/usr/share/R/library/geocoding_tests/version-24d_24.4/fls/
+export LD_LIBRARY_PATH=/usr/share/R/library/geocoding_tests/version-24d_24.4/lib/
+export GEOFILES=/usr/share/R/library/geocoding_tests/version-24d_24.4/fls/
 # comment above, and uncomment these lines if geosupport is in your home dir:
-export LD_LIBRARY_PATH=$HOME/version-24b_24.2/lib/
-export GEOFILES=$HOME/version-24b_24.2/fls/
+#export LD_LIBRARY_PATH=$HOME/version-24b_24.2/lib/
+#export GEOFILES=$HOME/version-24b_24.2/fls/
 echo $GEOFILES
 echo $LD_LIBRARY_PATH
 printf "Running python geocoding script...\n"
