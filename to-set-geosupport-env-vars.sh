@@ -1,5 +1,5 @@
 #!/bin/bash
-# Last modified: 2025-04-17 10:36
+# Last modified: 2025-05-07 17:39
 # this file: MT-to-set-geosupport-env-vars.sh
 
 ########################################
@@ -31,7 +31,9 @@ printf "Running python geocoding script...\n"
 # NOTE: this script does NOT leave those variables set since it calls a subprocess, sets the vars, and then runs the following script in the subprocess with those vars set.
 
 # Launch python script with vars set:
-exec python3 flask-upload-excel-test.py "$@"
+#exec python3 flask-upload-excel-test.py "$@"
+# This version to use custom conda env on R server at DOHMH:
+exec /opt/py-geosupport-conda-env/bin/python3 "$@"
 
 
 
