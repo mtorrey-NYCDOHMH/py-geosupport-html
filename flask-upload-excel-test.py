@@ -260,5 +260,5 @@ def end_session():
 if __name__ == "__main__":
     #app.run(debug=True) # by default, runs on localhost:5000
     # If you want to run for remote system, uncomment:
-    app.run(host='stgapprcode.health.dohmh.nycnet', port=5000
+    app.run(host='stgapprcode.health.dohmh.nycnet', port=5000)
 

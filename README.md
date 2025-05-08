@@ -65,6 +65,8 @@
 	    * Don't forget to test import of openpyxl
 
 ## TODO
+* Set up flask to run with apache/systemwide
+* Implement https connection
 * Add other Geosupport field options
 
 ## License and credits
