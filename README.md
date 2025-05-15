@@ -68,6 +68,7 @@
 * Set up flask to run with apache/systemwide
 * Implement https connection
 * Add other Geosupport field options
+* Add comment column with version of Geosupport, and the name of this tool
 
 ## License and credits
 * test-materials/ contains some stuff for testing.
