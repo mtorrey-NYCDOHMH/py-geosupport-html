@@ -258,7 +258,8 @@ def end_session():
 
 # This is necessary to run this file on the command line. You can turn off debugging, or comment this whole thing if it is run from Apache
 if __name__ == "__main__":
-    #app.run(debug=True) # by default, runs on localhost:5000
+    app.run(debug=True) # by default, runs on localhost:5000
     # If you want to run for remote system, uncomment:
-    app.run(host='stgapprcode.health.dohmh.nycnet', port=5000)
+    #app.run(host='stgapprcode.health.dohmh.nycnet', port=5000)
+    # NOTE: You'll get a `Name or service not known` error if this is set incorrectly.
 

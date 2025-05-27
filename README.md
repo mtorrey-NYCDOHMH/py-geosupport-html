@@ -63,6 +63,10 @@
     * `which python` (should show you are using /opt/py-geosupport-conda-env)
     * Start `python3` and then run down the list of imports in the flask file testing that each library imports correctly.
 	    * Don't forget to test import of openpyxl
+* Things to change if you are running in a standard Linux box vs RHEL DOHMH server:
+    * in `to-set-geosupport-env-vars.sh` change location of python in flask run line
+        * change location of geosupport in env vars
+    * in `flask-upload-excel-test.py` change app.run line from default localhost to actual server if you are running on RHEL server.
 
 ## TODO
 * Set up flask to run with apache/systemwide

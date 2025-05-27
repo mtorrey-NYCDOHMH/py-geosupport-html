@@ -59,24 +59,42 @@
   </form>
 
   <h2>Valid Addresses (Read-only)</h2>
-<table>
-  <thead>
-    <tr>
-      {% for col in valid.columns %}
-        <th>{{ col }}</th>
-      {% endfor %}
-    </tr>
-  </thead>
-  <tbody>
-    {% for _, row in valid.iterrows() %}
+  <table>
+    <thead>
       <tr>
         {% for col in valid.columns %}
-          <td class="table-cell">{{ row[col] }}</td>
+          <th>{{ col }}</th>
         {% endfor %}
       </tr>
-    {% endfor %}
-  </tbody>
-</table>
+    </thead>
+    <tbody>
+      {% for _, row in valid.iterrows() %}
+        <tr>
+          {% for col in valid.columns %}
+            <td class="table-cell">{{ row[col] }}</td>
+          {% endfor %}
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+
+  <script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const inputs = document.querySelectorAll("input[type='text']");
+    inputs.forEach(input => {
+      input.dataset.original = input.value;
+  
+      input.addEventListener("input", function () {
+        if (input.value !== input.dataset.original) {
+          input.style.backgroundColor = "#fff3b0"; // light yellow
+        } else {
+          input.style.backgroundColor = ""; // reset if unchanged
+        }
+      });
+    });
+  });
+  </script>
 
 </body>
 </html>
