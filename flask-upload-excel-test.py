@@ -22,6 +22,9 @@ app.config['BASE_TMP_DIR'] = BASE_TMP_DIR
 
 g = Geosupport()
 
+## Test submitting house number + street name to the street_name field in 1B:
+#result = g['1B']({'street_name': '2102 AMSTERDAM AVENUE', 'zip_code': '10032'})
+#print(result)
 
 ### Home page to upload file:
 @app.route('/', methods=['GET', 'POST'])
