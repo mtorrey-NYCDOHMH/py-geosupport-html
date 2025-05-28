@@ -6,6 +6,7 @@
   <form method="post">
     <label>House Number Column:</label>
     <select name="house_col">
+      <option value="">(NONE)</option>
       {% for col in columns %}
         <option value="{{ col }}">{{ col }}</option>
       {% endfor %}

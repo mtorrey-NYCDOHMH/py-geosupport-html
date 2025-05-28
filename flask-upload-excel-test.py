@@ -112,8 +112,10 @@ def geocode_data():
 
     for _, row in df.iterrows():
         try:
+            # Check if there's a value in the house_col, otherwise set it to empty:
+            house_number = row[house_col] if house_col else ''
             result = g.address(
-                house_number=row[house_col],
+                house_number=house_number,
                 street_name=row[street_col],
                 zip_code=row[zip_col]
             )
