@@ -88,6 +88,7 @@ def select_columns():
         session['house_col'] = request.form['house_col']
         session['street_col'] = request.form['street_col']
         session['zip_col'] = request.form['zip_col']
+        session['geocode_mode'] = request.form['geocode_mode']  # 'zip' or 'boro'
         return redirect(url_for('geocode_data'))
     columns = df.columns.tolist()
     return render_template('select.html', columns=columns) # calls select.html in templates/
@@ -104,6 +105,7 @@ def geocode_data():
     house_col = session['house_col']
     street_col = session['street_col']
     zip_col = session['zip_col']
+    geocode_mode = session.get('geocode_mode', 'zip')  # default to 'zip'
 
     gdf = pd.DataFrame()
     latitudes = []
@@ -112,13 +114,19 @@ def geocode_data():
 
     for _, row in df.iterrows():
         try:
-            # Check if there's a value in the house_col, otherwise set it to empty:
             house_number = row[house_col] if house_col else ''
-            result = g.address(
-                house_number=house_number,
-                street_name=row[street_col],
-                zip_code=row[zip_col]
-            )
+            if geocode_mode == 'boro': # If user selected geocode by boro, use the boro data (held in the zip_col)
+                result = g.address(
+                    house_number=house_number,
+                    street_name=row[street_col],
+                    borough=row[zip_col]
+                )
+            else:
+                result = g.address( # Otherwise, use the actual zip code data in the zip_col
+                    house_number=house_number,
+                    street_name=row[street_col],
+                    zip_code=row[zip_col]
+                )
             latitudes.append(result.get('Latitude'))
             longitudes.append(result.get('Longitude'))
             errors.append(None)
