@@ -55,8 +55,11 @@
         {% endfor %}
       </tbody>
     </table>
+    <p>
+      <label><input type="radio" name="geocode_mode" value="zip" checked> Geocode by ZIP code</label><br>
+      <label><input type="radio" name="geocode_mode" value="boro"> Geocode by Borough</label>
+    </p>
     <input type="submit" value="Resubmit Corrections">
-    (Note: resubmit geocodes against zip, not borough)
   </form>
 
   <h2>Valid Addresses (Read-only)</h2>

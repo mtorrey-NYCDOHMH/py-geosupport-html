@@ -20,12 +20,12 @@
       {% endfor %}
     </select><br>
 
+    <p>
     <label for="geocode_mode">Geocode using:</label>
-    (You need to have a column with either a zip code or or borough. Select which column type you are submitting here.) 
-    <select name="geocode_mode" id="geocode_mode">
-      <option value="zip" selected>ZIP Code</option>
-      <option value="boro">Borough</option>
-    </select>
+    You need to have a column with either a zip code or or borough. Select which column type you are submitting here:<br>
+    <label><input type="radio" name="geocode_mode" value="zip" checked> Geocode by ZIP code</label><br>
+    <label><input type="radio" name="geocode_mode" value="boro"> Geocode by Borough</label><br>
+    </p>
 
     <label>ZIP Code or Borough Column:</label>
     <select name="zip_col">

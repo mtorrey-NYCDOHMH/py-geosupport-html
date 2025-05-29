@@ -167,6 +167,9 @@ def retry():
     if not upload_dir:
         return 'Session upload directory missing.', 500
 
+    # Get selected mode from form:
+    geocode_mode = request.form.get('geocode_mode', 'zip')
+
     # Reconstruct DataFrame from form inputs
     keys = request.form.keys()
     row_indices = set(k.split('_')[-1] for k in keys if '_' in k)
@@ -185,11 +188,23 @@ def retry():
 
     for _, row in df_retry.iterrows():
         try:
-            result = g.address(
-                house_number=row[house_col],
-                street_name=row[street_col],
-                zip_code=row[zip_col]
-            )
+            house_number = row[house_col] if house_col else ''
+            street_name = row[street_col]
+            loc_value = row[zip_col]
+
+            if geocode_mode == 'boro':
+                result = g.address(
+                    house_number=house_number,
+                    street_name=street_name,
+                    borough=loc_value
+                )
+            else:
+                result = g.address(
+                    house_number=house_number,
+                    street_name=street_name,
+                    zip_code=loc_value
+                )
+
             latitudes.append(result.get('Latitude'))
             longitudes.append(result.get('Longitude'))
             errors.append(None)
@@ -227,7 +242,8 @@ def retry():
     valid_count = len(df_valid_combined)
     error_count = len(df_error)
 
-    return render_template('geocode_result.html', valid=df_valid_combined, error=df_error, valid_count=valid_count, error_count=error_count)
+    return render_template('geocode_result.html', valid=df_valid_combined, error=df_error,
+                           valid_count=valid_count, error_count=error_count)
 
 
 @app.route('/download', methods=['GET'])
