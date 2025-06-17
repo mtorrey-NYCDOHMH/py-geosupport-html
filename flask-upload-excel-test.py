@@ -171,18 +171,9 @@ def retry():
     geocode_mode = request.form.get('geocode_mode', 'zip')
 
     # Reconstruct DataFrame from form inputs
-    import re
-
-    pattern = re.compile(r'^(.*)_(\d+)$')
-    row_indices = set()
-    columns = set()
-
-    for key in request.form.keys():
-        match = pattern.match(key)
-        if match:
-            col, idx = match.groups()
-            columns.add(col)
-            row_indices.add(idx)
+    keys = request.form.keys()
+    row_indices = set(k.split('_')[-1] for k in keys if '_' in k)
+    columns = set(k.rsplit('_', 1)[0] for k in keys)
 
     data = []
     for idx in row_indices:
