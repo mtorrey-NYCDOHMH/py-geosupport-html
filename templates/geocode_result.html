@@ -48,7 +48,9 @@
           <tr>
             {% for col in error.columns %}
               <td>
-                <input type="text" name="{{ col }}_{{ i }}" value="{{ row[col] }}">
+		<input type="text"
+		       name="{% if col == zip_col %}{{ 'ZIP Code' if geocode_mode == 'zip' else 'Borough' }}_{{ i }}{% else %}{{ col }}_{{ i }}{% endif %}"
+		       value="{{ row[col] }}">
               </td>
             {% endfor %}
           </tr>

@@ -154,7 +154,7 @@ def geocode_data():
     valid_count = len(df_valid)
     error_count = len(df_error)
 
-    return render_template('geocode_result.html', valid=df_valid, error=df_error, valid_count=valid_count, error_count=error_count) # calls geocode_result template for user to review data successfully geocoded, and edit lines that failed.
+    return render_template('geocode_result.html', valid=df_valid, error=df_error, valid_count=valid_count, error_count=error_count, zip_col=zip_col, geocode_mode=geocode_mode) # calls geocode_result template for user to review data successfully geocoded, and edit lines that failed.
 
 
 @app.route('/retry', methods=['POST'])
@@ -199,7 +199,7 @@ def retry():
         try:
             house_number = row[house_col] if house_col else ''
             street_name = row[street_col]
-            loc_value = row[zip_col]
+            loc_value = row.get('Borough' if geocode_mode == 'boro' else 'ZIP Code')
 
             if geocode_mode == 'boro':
                 result = g.address(
@@ -241,6 +241,14 @@ def retry():
     df_valid_combined = pd.concat([df_valid_old, df_valid_new], ignore_index=True)
     df_valid_combined.to_csv(valid_path, index=False)
 
+    # Patch column name to match original
+    if geocode_mode == "boro":
+        df_error["BORO_ABBR"] = df_error["Borough"]
+        del df_error["Borough"]
+    else:
+        df_error["ZIPCODE"] = df_error["ZIP Code"]
+        del df_error["ZIP Code"]
+
     # Ensure consistent column order
     df_error = df_error[df_valid_combined.columns]
 
@@ -251,8 +259,7 @@ def retry():
     valid_count = len(df_valid_combined)
     error_count = len(df_error)
 
-    return render_template('geocode_result.html', valid=df_valid_combined, error=df_error,
-                           valid_count=valid_count, error_count=error_count)
+    return render_template('geocode_result.html', valid=df_valid_combined, error=df_error, valid_count=valid_count, error_count=error_count, zip_col=zip_col, geocode_mode=geocode_mode)
 
 
 @app.route('/download', methods=['GET'])
